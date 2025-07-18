@@ -1,6 +1,6 @@
 {
   "name": "vue-picture-input",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Mobile-friendly picture file input component with image preview and drag and drop.",
   "main": "PictureInput.vue",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alessiomaffeis/vue-picture-input.git"
+    "url": "git+https://github.com/xlvisuals/vue-picture-input"
   },
   "keywords": [
     "vue",
@@ -23,9 +23,9 @@
   "author": "alessio@maffe.is",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alessiomaffeis/vue-picture-input/issues"
+    "url": "https://github.com/xlvisuals/vue-picture-input/issues"
   },
-  "homepage": "https://github.com/alessiomaffeis/vue-picture-input",
+  "homepage": "https://github.com/xlvisuals/vue-picture-input",
   "devDependencies": {
     "@vue/test-utils": "^1.0.0",
     "babel-core": "^6.26.3",
