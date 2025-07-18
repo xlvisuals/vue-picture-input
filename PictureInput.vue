@@ -149,7 +149,7 @@ export default {
     }
   },
   watch: {
-    prefill () {
+    prefill() {
       if (this.prefill) {
         this.preloadImage(this.prefill, this.prefillOptions)
       } else {
@@ -157,7 +157,7 @@ export default {
       }
     }
   },
-  data () {
+  data() {
     return {
       imageSelected: false,
       previewHeight: 0,
@@ -179,7 +179,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.updateStrings()
     if (this.prefill) {
       this.preloadImage(this.prefill, this.prefillOptions)
@@ -201,23 +201,23 @@ export default {
       this.fileTypes = this.accept.split(',')
       this.fileTypes = this.fileTypes.map(s => s.trim())
     }
-    this.canvasWidth = this.width != Number.MAX_SAFE_INTEGER ? this.width : this.$refs.container.clientWidth 
+    this.canvasWidth = this.width != Number.MAX_SAFE_INTEGER ? this.width : this.$refs.container.clientWidth
     this.canvasHeight = this.height != Number.MAX_SAFE_INTEGER ? this.height : this.canvasWidth
     this.previewWidth = this.canvasWidth
     this.previewHeight = this.canvasHeight
   },
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
-    updateStrings () {
+    updateStrings() {
       for (let s in this.customStrings) {
         if (s in this.strings && typeof this.customStrings[s] === 'string') {
           this.strings[s] = this.customStrings[s]
         }
       }
     },
-    onClick () {
+    onClick() {
       if (!this.imageSelected) {
         this.selectImage()
         return
@@ -229,29 +229,29 @@ export default {
 
       this.$emit('click')
     },
-    onResize () {
+    onResize() {
       if (this.resizeCanvas() && this.imageObject) {
         this.drawImage(this.imageObject)
       }
     },
-    onDragEnter () {
+    onDragEnter() {
       if (!this.supportsDragAndDrop) {
         return
       }
       this.draggingOver = true
     },
-    onDragLeave () {
+    onDragLeave() {
       if (!this.supportsDragAndDrop) {
         return
       }
       this.draggingOver = false
     },
-    onFileDrop (e) {
+    onFileDrop(e) {
       this.onDragLeave()
       this.$refs.fileInput.files = e.target.files || e.dataTransfer.files
       this.onFileChange(e)
     },
-    onFileChange (e, prefill) {
+    onFileChange(e, prefill) {
       const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
         return
@@ -278,13 +278,15 @@ export default {
       this.fileSize = files[0].size
       this.fileModified = files[0].lastModified
       this.fileType = files[0].type.split(';')[0]
+      const fileExtension = '.' + this.fileName.split('.').pop()
 
       if (this.accept === 'image/*') {
         if (this.fileType.substr(0, 6) !== 'image/') {
           return
         }
       } else {
-        if (this.fileTypes.indexOf(this.fileType) === -1) {
+        if (this.fileTypes.indexOf(this.fileType) === -1 &&
+            this.fileTypes.indexOf(fileExtension) === -1) {
           this.$emit('error', {
             type: 'fileType',
             fileSize: this.fileSize,
@@ -302,15 +304,12 @@ export default {
       this.image = ''
       if (this.supportsPreview) {
         this.loadImage(files[0], prefill || false)
-      } else {
-        if (prefill) {
-          this.$emit('prefill')
-        } else {
-          this.$emit('change', this.image)
-        }
+      } else if (prefill) {
+        this.$emit('prefill')
       }
+      this.$emit('change', this.image)
     },
-    loadImage (file, prefill) {
+    loadImage(file, prefill) {
       this.getEXIFOrientation(file, orientation => {
         this.setOrientation(orientation)
         let reader = new FileReader()
@@ -332,7 +331,7 @@ export default {
         reader.readAsDataURL(file)
       })
     },
-    drawImage (image) {
+    drawImage(image) {
       this.imageWidth = image.width
       this.imageHeight = image.height
       this.imageRatio = image.width / image.height
@@ -372,15 +371,15 @@ export default {
         offsetY = -scaledHeight / 2
       }
       this.context.drawImage(image,
-        offsetX * this.pixelRatio,
-        offsetY * this.pixelRatio,
-        scaledWidth * this.pixelRatio,
-        scaledHeight * this.pixelRatio)
+          offsetX * this.pixelRatio,
+          offsetY * this.pixelRatio,
+          scaledWidth * this.pixelRatio,
+          scaledHeight * this.pixelRatio)
     },
-    selectImage () {
+    selectImage() {
       this.$refs.fileInput.click()
     },
-    removeImage () {
+    removeImage() {
       this.$refs.fileInput.value = ''
       this.$refs.fileInput.type = ''
       this.$refs.fileInput.type = 'file'
@@ -396,7 +395,7 @@ export default {
       this.$refs.previewCanvas.width = this.previewWidth * this.pixelRatio
       this.$emit('remove')
     },
-    rotateImage () {
+    rotateImage() {
       this.rotateCanvas()
 
       if (this.imageObject) {
@@ -406,10 +405,10 @@ export default {
       let newOrientation = this.getOrientation(this.canvasWidth, this.canvasHeight)
       this.$emit('aspectratiochange', newOrientation)
     },
-    resizeCanvas () {
+    resizeCanvas() {
       let previewRatio = this.canvasWidth / this.canvasHeight
       let newWidth = this.$refs.container.clientWidth
-      if( !newWidth ) return false;
+      if (!newWidth) return false;
       if (!this.toggleAspectRatio && !this.autoToggleAspectRatio && newWidth === this.containerWidth) {
         return false;
       }
@@ -418,7 +417,7 @@ export default {
       this.previewHeight = this.previewWidth / previewRatio
       return true;
     },
-    getOrientation (width, height) {
+    getOrientation(width, height) {
       let orientation = 'square'
 
       if (width > height) {
@@ -429,18 +428,18 @@ export default {
 
       return orientation
     },
-    switchCanvasOrientation () {
+    switchCanvasOrientation() {
       const canvasWidth = this.canvasWidth
       const canvasHeight = this.canvasHeight
 
       this.canvasWidth = canvasHeight
       this.canvasHeight = canvasWidth
     },
-    rotateCanvas () {
+    rotateCanvas() {
       this.switchCanvasOrientation()
       this.resizeCanvas()
     },
-    setOrientation (orientation) {
+    setOrientation(orientation) {
       this.rotate = false
       if (orientation === 8) {
         this.rotate = -Math.PI / 2
@@ -450,7 +449,7 @@ export default {
         this.rotate = -Math.PI
       }
     },
-    getEXIFOrientation (file, callback) {
+    getEXIFOrientation(file, callback) {
       var reader = new FileReader()
       reader.onload = e => {
         var view = new DataView(e.target.result)
@@ -485,14 +484,14 @@ export default {
       }
       reader.readAsArrayBuffer(file.slice(0, 65536))
     },
-    preloadImage (source, options) {
+    preloadImage(source, options) {
       // ie 11 support
       let File = window.File
       try {
         new File([], '') // eslint-disable-line
       } catch (e) {
         File = class File extends Blob {
-          constructor (chunks, filename, opts = {}) {
+          constructor(chunks, filename, opts = {}) {
             super(chunks, opts)
             this.lastModifiedDate = new Date()
             this.lastModified = +this.lastModifiedDate
@@ -527,31 +526,31 @@ export default {
       }).then(response => {
         return response.blob()
       })
-      .then(imageBlob => {
-        let e = { target: { files: [] } }
-        const fileName = options.fileName || source.split('/').slice(-1)[0]
-        let mediaType = options.mediaType || imageBlob.type || ('image/' + (options.fileType || fileName.split('?')[0].split('.').slice(-1)[0].split('?')[0]))
-        mediaType = mediaType.replace('jpg', 'jpeg')
-        mediaType = mediaType.replace('image/svg', 'image/svg+xml')
-        if (mediaType === 'image/svg') {
-          mediaType = 'image/svg+xml'
-        }
-        e.target.files[0] = new File([imageBlob], fileName, { type: mediaType })
-        this.onFileChange(e, true)
-      })
-      .catch(err => {
-        this.$emit('error', {
-          type: 'failedPrefill',
-          message: 'Failed loading prefill image: ' + err
-        })
-        if (this.alertOnError) {
-          alert('Failed loading prefill image: ' + err)
-        }
-      })
+          .then(imageBlob => {
+            let e = {target: {files: []}}
+            const fileName = options.fileName || source.split('/').slice(-1)[0]
+            let mediaType = options.mediaType || imageBlob.type || ('image/' + (options.fileType || fileName.split('?')[0].split('.').slice(-1)[0].split('?')[0]))
+            mediaType = mediaType.replace('jpg', 'jpeg')
+            mediaType = mediaType.replace('image/svg', 'image/svg+xml')
+            if (mediaType === 'image/svg') {
+              mediaType = 'image/svg+xml'
+            }
+            e.target.files[0] = new File([imageBlob], fileName, {type: mediaType})
+            this.onFileChange(e, true)
+          })
+          .catch(err => {
+            this.$emit('error', {
+              type: 'failedPrefill',
+              message: 'Failed loading prefill image: ' + err
+            })
+            if (this.alertOnError) {
+              alert('Failed loading prefill image: ' + err)
+            }
+          })
     }
   },
   computed: {
-    supportsUpload () {
+    supportsUpload() {
       if (navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/)) {
         return false
       }
@@ -559,19 +558,19 @@ export default {
       el.type = 'file'
       return !el.disabled
     },
-    supportsPreview () {
+    supportsPreview() {
       return window.FileReader && !!window.CanvasRenderingContext2D
     },
-    supportsDragAndDrop () {
+    supportsDragAndDrop() {
       const div = document.createElement('div')
       return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && !('ontouchstart' in window || navigator.msMaxTouchPoints)
     },
-    computedClasses () {
+    computedClasses() {
       const classObject = {}
       classObject['dragging-over'] = this.draggingOver
       return classObject
     },
-    fontSize () {
+    fontSize() {
       return Math.min(0.04 * this.previewWidth, 21) + 'px'
     }
   }
@@ -584,25 +583,29 @@ export default {
   margin: 0 auto;
   text-align: center;
 }
+
 .preview-container {
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
   cursor: pointer;
   overflow: hidden;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
 }
+
 .picture-preview {
   width: 100%;
   height: 100%;
   position: relative;
   z-index: 10001;
   box-sizing: border-box;
-  background-color: rgba(200,200,200,.25);
+  background-color: rgba(200, 200, 200, .25);
 }
+
 .picture-preview.dragging-over {
   filter: brightness(0.5);
 }
+
 .picture-inner {
   position: relative;
   z-index: 10002;
@@ -610,12 +613,13 @@ export default {
   box-sizing: border-box;
   margin: 1em auto;
   padding: 0.5em;
-  border: .3em dashed rgba(66,66,66,.15);
+  border: .3em dashed rgba(66, 66, 66, .15);
   border-radius: 8px;
   width: calc(100% - 2.5em);
   height: calc(100% - 2.5em);
   display: table;
 }
+
 .picture-inner .picture-inner-text {
   display: table-cell;
   vertical-align: middle;
@@ -623,10 +627,12 @@ export default {
   font-size: 2em;
   line-height: 1.5;
 }
+
 button {
   margin: 1em .25em;
   cursor: pointer;
 }
+
 input[type=file] {
   display: none;
 }
