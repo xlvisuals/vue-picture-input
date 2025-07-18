@@ -303,13 +303,13 @@ export default {
       this.imageSelected = true
       this.image = ''
       if (this.supportsPreview) {
-        this.loadImage(files[0], prefill || false)
+        this.loadImage(files[0])
       } else if (prefill) {
         this.$emit('prefill')
       }
       this.$emit('change', this.image)
     },
-    loadImage(file, prefill) {
+    loadImage(file) {
       this.getEXIFOrientation(file, orientation => {
         this.setOrientation(orientation)
         let reader = new FileReader()
