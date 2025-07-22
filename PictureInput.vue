@@ -366,13 +366,15 @@ export default {
       this.fileSize = files[0].size;
       this.fileModified = files[0].lastModified;
       this.fileType = files[0].type.split(";")[0];
+      const fileExtension = '.' + this.fileName.split('.').pop()
 
       if (this.accept === "image/*") {
         if (this.fileType.substr(0, 6) !== "image/") {
           return;
         }
       } else {
-        if (this.fileTypes.indexOf(this.fileType) === -1) {
+        if (this.fileTypes.indexOf(this.fileType) === -1 &&
+            this.fileTypes.indexOf(fileExtension) === -1) {
           this.$emit("error", {
             type: "fileType",
             fileSize: this.fileSize,
@@ -389,16 +391,13 @@ export default {
       this.imageSelected = !prefill;
       this.imagePreloaded = prefill;
       if (this.supportsPreview) {
-        this.loadImage(files[0], prefill || false);
-      } else {
-        if (prefill) {
-          this.$emit("prefill");
-        } else {
-          this.$emit("change", this.image);
-        }
+        this.loadImage(files[0]);
+      } else if (prefill) {
+        this.$emit("prefill");
       }
+      this.$emit("change", this.image)
     },
-    loadImage(file, prefill) {
+    loadImage(file) {
       this.getEXIFOrientation(file, (orientation) => {
         this.setOrientation(orientation);
         let reader = new FileReader();
@@ -420,11 +419,6 @@ export default {
               }
             }
             this.drawImage(this.imageObject);
-            if (prefill) {
-              this.$emit("prefill");
-            } else {
-              this.$emit("change", this.image);
-            }
           };
           this.imageObject.src = this.image;
         };
